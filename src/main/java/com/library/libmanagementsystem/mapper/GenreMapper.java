@@ -28,7 +28,7 @@ public class GenreMapper {
                     .code(savedGenre.getCode())
                     .name(savedGenre.getName())
                     .description(savedGenre.getDescription())
-                    .active(true)
+                    .active(savedGenre.getActive())
                     .createdAt(savedGenre.getCreatedAt())
                     .updatedAt(savedGenre.getUpdatedAt())
                     .build();

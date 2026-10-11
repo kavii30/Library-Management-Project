@@ -1,0 +1,77 @@
+package com.library.libmanagementsystem.payload.dto;
+
+import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class BookDTO {
+
+    private Integer id;
+
+    @NotBlank(message="ISBN is mandatory")// from validation package
+    private String isbn;
+
+    @NotBlank(message = "Title is mandatory ")
+    private String title;
+
+    @NotBlank(message="Author is mandatory")
+    @Size(min=1,max=255, message="Author name must be in between 1 to 255 character ")// @Size is also from validation package
+    private String author;
+
+    @NotNull(message= "Genre is mandatory ")
+    private Long genreId;
+
+    private String genreName;
+
+    private String genreCode;
+
+    @Size(max=100,message="publisher name must not exceed 100 characters ")
+    private String publisher;
+
+    private LocalDate publicationDate;
+
+    @Size(max=20,message = "Language must not exceeds 20 cahracters ")
+    private String Language;
+
+    @Min(value=1,message = "Pages must be at least 1")
+    @Max(value=50000,message="Pages must not exceed 50000")// this is also from validation package
+    private Integer pages;
+
+    @Size(max=2000, message="Description must not exceed 2000 characters ")
+    private String description;
+
+    @Min(value=0,message = "total copies cannot be negative")
+    @NotNull(message="Total copies cannot be null it is mandatory")
+    private Integer totalCopies;
+
+    @Min(value=0,message = "Available copies cannot be negative")
+    @NotNull(message="Available copies cannot be null it is mandatory")
+    private Integer availableCopies;
+
+    @DecimalMin(value = "0.0", inclusive = true, message = "Price cannot be negative")
+    @Digits(integer = 8, fraction = 2, message = "Price must have at most 8 integer digits and 2 fraction digits")
+    private BigDecimal price;
+
+    @Size(max = 500, message = "Image URL must not exceed 500 characters")
+    private String coverImageUrl;
+
+    private Boolean alreadyHaveLoan;
+    private Boolean alreadyHaveReservation;
+
+    private Boolean active;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+}

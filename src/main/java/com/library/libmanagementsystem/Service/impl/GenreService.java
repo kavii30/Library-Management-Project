@@ -48,6 +48,7 @@ public class GenreService implements IGenreService {
     @Override
     public GenreDTO updateGenre(Long genreId, GenreDTO dto) throws GenreException {
 
+
        Genre existingGenre = genreRepository.findById(genreId)
                .orElseThrow(()->new GenreException("Genre with this id not found"));
        genreMapper.updateEntityFromDTO(dto,existingGenre);
