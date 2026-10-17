@@ -10,10 +10,11 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface BooksRepository extends JpaRepository<Book,Integer> {
+public interface BooksRepository extends JpaRepository<Book,Long> {
     Optional<Book> findByIsbn(String isbn);
 
     boolean existsByIsbn(String isbn);
+
     @Query("select b from Book b where " +
             "(:searchTerm is null OR "+
             "lower(b.title) like lower(concat ('%', :searchTerm,'%')) OR "+
@@ -32,4 +33,5 @@ public interface BooksRepository extends JpaRepository<Book,Integer> {
     @Query("select count(b) from Book b where b.availableCopies>0 and b.active=true")
     long countAvailableBooks();
 
+    String Isbn(String isbn);
 }

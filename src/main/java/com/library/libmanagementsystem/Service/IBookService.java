@@ -1,5 +1,6 @@
 package com.library.libmanagementsystem.Service;
 
+import com.library.libmanagementsystem.exception.BookException;
 import com.library.libmanagementsystem.payload.dto.BookDTO;
 import com.library.libmanagementsystem.payload.request.BookSearchRequest;
 import com.library.libmanagementsystem.payload.response.PageResponse;
@@ -8,15 +9,15 @@ import java.util.List;
 
 public interface IBookService {
 
-    BookDTO createBook(BookDTO bookDTO);
+    BookDTO createBook(BookDTO bookDTO) throws BookException;
 
-    List<BookDTO> createBooksInBulk(List<BookDTO> bookDTO);
+    List<BookDTO> createBooksInBulk(List<BookDTO> bookDTO) throws BookException;
 
-    BookDTO getBookById(Long bookId);
+    BookDTO getBookById(Long bookId) throws BookException;
 
-    BookDTO getBookByISBN(String isbn);
+    BookDTO getBookByISBN(String isbn) throws BookException;
 
-    BookDTO updateBook();
+    BookDTO updateBook(Long bookId , BookDTO bookDTO);
 
     void softDeleteBook();
 

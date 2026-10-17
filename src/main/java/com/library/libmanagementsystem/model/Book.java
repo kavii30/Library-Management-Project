@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false,unique = true)
     private String isbn;

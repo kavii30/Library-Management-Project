@@ -15,4 +15,18 @@ public class GlobalException  {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ApiResponse(e.getMessage(),false));
     }
+
+    @ExceptionHandler(BookException.class)
+    public ResponseEntity<ApiResponse> handleBookException(BookException e) {
+
+        // 1. Get the error message from the exception
+        String message = e.getMessage();
+
+        // 2. Build the response body (false = the operation failed)
+        ApiResponse response = new ApiResponse(message, false);
+
+        // 3. Send it back with status 400
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+    // easier way to write the exception
 }

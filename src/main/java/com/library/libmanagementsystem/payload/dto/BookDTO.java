@@ -41,7 +41,7 @@ public class BookDTO {
     private LocalDate publicationDate;
 
     @Size(max=20,message = "Language must not exceeds 20 cahracters ")
-    private String Language;
+    private String language;
 
     @Min(value=1,message = "Pages must be at least 1")
     @Max(value=50000,message="Pages must not exceed 50000")// this is also from validation package
