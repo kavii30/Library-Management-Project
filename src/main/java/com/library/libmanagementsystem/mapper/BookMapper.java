@@ -71,7 +71,7 @@ public class BookMapper {
 
     }
 
-    public void updateBook(BookDTO dto,Book existingbook) throws BookException {
+    public void updateEntityFromDTO(BookDTO dto,Book existingbook) throws BookException {
         if(existingbook==null || dto==null) {
             return ;
         }
@@ -94,6 +94,6 @@ public class BookMapper {
         if(dto.getActive()!=null){
             existingbook.setActive(dto.getActive());
         }
-
+        //we can't update isbn.
     }
 }

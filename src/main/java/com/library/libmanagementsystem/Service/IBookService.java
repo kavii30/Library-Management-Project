@@ -17,11 +17,11 @@ public interface IBookService {
 
     BookDTO getBookByISBN(String isbn) throws BookException;
 
-    BookDTO updateBook(Long bookId , BookDTO bookDTO);
+    BookDTO updateBook(Long bookId , BookDTO bookDTO) throws BookException;
 
-    void softDeleteBook();
+    void softDeleteBook(Long bookId) throws BookException;
 
-    void hardDeleteBook();
+    void hardDeleteBook(Long bookId) throws BookException;
 
     PageResponse<BookDTO> searchBooksWithFilters(
             BookSearchRequest searchRequest );

@@ -29,4 +29,10 @@ public class GlobalException  {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
     // easier way to write the exception
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ApiResponse> handelUserException(UserException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ApiResponse(e.getMessage(),false));
+    }
 }

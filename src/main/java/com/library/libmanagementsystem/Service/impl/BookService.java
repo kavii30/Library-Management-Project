@@ -4,21 +4,30 @@ import com.library.libmanagementsystem.Repository.BooksRepository;
 import com.library.libmanagementsystem.Service.IBookService;
 import com.library.libmanagementsystem.exception.BookException;
 import com.library.libmanagementsystem.mapper.BookMapper;
+import com.library.libmanagementsystem.mapper.GenreMapper;
 import com.library.libmanagementsystem.model.Book;
 import com.library.libmanagementsystem.payload.dto.BookDTO;
 import com.library.libmanagementsystem.payload.request.BookSearchRequest;
 import com.library.libmanagementsystem.payload.response.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class BookService implements IBookService {
     private final BooksRepository bookRepository;
     private final BookMapper bookMapper;
+    private final GenreMapper genreMapper;
+
     @Override
     @Transactional(rollbackFor = BookException.class)
     public BookDTO createBook(BookDTO bookDTO) throws BookException {
@@ -62,32 +71,87 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public BookDTO updateBook(Long bookId, BookDTO bookDTO) {
-        return null;
+    public BookDTO updateBook(Long bookId, BookDTO updatedbookDTO) throws BookException {
+       Book existingbook=bookRepository.findById(bookId)
+               .orElseThrow(()->new BookException("Kindly add valid BookId"));
+
+        bookMapper.updateEntityFromDTO(updatedbookDTO,existingbook);
+        existingbook.isAvailableCopiesValid();
+          Book savedBook =bookRepository.save(existingbook);
+          return bookMapper.toDTO(savedBook);
+
     }
 
     @Override
-    public void softDeleteBook() {
+    public void softDeleteBook(Long bookId) throws BookException {
+        Book book=bookRepository.findById(bookId)
+                .orElseThrow(()->new BookException("Kindly add valid BookId"));
+
+        book.setActive(false);
+        bookRepository.save(book);
 
     }
 
     @Override
-    public void hardDeleteBook() {
+    public void hardDeleteBook(Long bookId) throws BookException {
+        Book existingbook=bookRepository.findById(bookId)
+                .orElseThrow(()->new BookException("Please enter valid bookId"));
+
+        bookRepository.delete(existingbook);
 
     }
 
     @Override
     public PageResponse<BookDTO> searchBooksWithFilters(BookSearchRequest searchRequest) {
-        return null;
+        Pageable pageable=createPageable(searchRequest.getPage(),
+                searchRequest.getSize(),
+                searchRequest.getSortBy(),
+                searchRequest.getSortDirection());
+        Page<Book> bookPage = bookRepository.searchBooksWithFilter(
+                searchRequest.getSearchTerm(),
+                searchRequest.getGenreId(),
+                searchRequest.getAvailableOnly(),
+                pageable
+        );
+
+        return convertToPageResponse(bookPage);
     }
 
     @Override
     public long getTotalActiveBooks() {
-        return 0;
+        return bookRepository.countByActiveTrue();
     }
 
     @Override
     public long getTotalAvailableBooks() {
-        return 0;
+        return bookRepository.countAvailableBooks();
+    }
+
+    private Pageable createPageable(int page, int size,String sortBy,String sortDirection){
+        size=Math.min(size,10);
+        size=Math.max(size,1);
+
+        Sort sort=sortDirection.equalsIgnoreCase("ASC")
+                ?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
+
+        return PageRequest.of(page,size,sort);
+    }
+
+    private PageResponse<BookDTO> convertToPageResponse(Page<Book> books){
+        List<BookDTO> bookDTOs=books.getContent()
+                .stream()
+                .map(bookMapper::toDTO)
+                .collect(Collectors.toList());
+
+        return new PageResponse<>(bookDTOs,
+                books.getNumber(),
+                books.getSize(),
+                books.getTotalElements(),
+                books.getTotalPages(),
+                books.isLast(),
+                books.isFirst(),
+                books.isEmpty()
+        );
+
     }
 }
