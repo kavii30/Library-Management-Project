@@ -27,20 +27,24 @@ public class JwtValidator extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String jwt=request.getHeader(JwtConstant.JWT_Header);
 
-        if(jwt!=null){
+        if(jwt!=null&& jwt.startsWith("Bearer ")){
             jwt=jwt.substring(7);
 
             try{
                 SecretKey key= Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
-                Claims claims= Jwts.parser().verifyWith(key).build()
-                        .parseSignedClaims(jwt).getPayload();
+                Claims claims= Jwts.parser()
+                        .verifyWith(key)
+                        .build()
+                        .parseSignedClaims(jwt)
+                        .getPayload();
 
 
                 String email=String.valueOf(claims.get("email"));
                 String authorities=String.valueOf(claims.get("authorities"));
 
 
-                List<GrantedAuthority> authoritiesList= AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+                List<GrantedAuthority> authoritiesList=
+                        AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
 
                 Authentication auth=new UsernamePasswordAuthenticationToken(
                         email,null,authoritiesList);

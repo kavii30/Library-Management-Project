@@ -2,10 +2,7 @@ package com.library.libmanagementsystem.model;
 
 import com.library.libmanagementsystem.domain.AuthProvider;
 import com.library.libmanagementsystem.domain.UserRole;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,8 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -24,17 +20,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(unique=true,nullable=false)
     private String email;
 
     private String fullName;
 
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    // Save enum as its name, not its position number, so the data stays correct if the enum list changes
+    @ToString.Exclude
     private String password;
 
-    private String Phone;
+    private String phone;
 
-    private AuthProvider authprovider= com.library.libmanagementsystem.domain.AuthProvider.LOCAL;
+    private AuthProvider authProvider= com.library.libmanagementsystem.domain.AuthProvider.LOCAL;
 
     private String googleID;
 
@@ -47,9 +47,5 @@ public class User {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-
-
-
 
 }

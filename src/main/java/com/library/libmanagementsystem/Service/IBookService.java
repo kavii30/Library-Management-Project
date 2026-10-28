@@ -30,4 +30,10 @@ public interface IBookService {
     long getTotalActiveBooks();
 
     long getTotalAvailableBooks();
+
+    List<BookDTO> getAllActiveBooks();
+
+    List<BookDTO> getAllBooks();
+
+
 }

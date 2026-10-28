@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @RequiredArgsConstructor
 public class BookService implements IBookService {
@@ -127,6 +129,26 @@ public class BookService implements IBookService {
         return bookRepository.countAvailableBooks();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookDTO> getAllActiveBooks() {
+       List<Book> books=bookRepository.findAllByActiveTrue();
+       return books.stream()
+               .map(bookMapper::toDTO)
+               .collect(toList());
+
+    }
+
+    @Override
+    public List<BookDTO> getAllBooks() {
+       List<Book> books =bookRepository.findAll();
+       return books.stream()
+               .map(bookMapper::toDTO)
+               .collect(toList());
+
+    }
+
+
     private Pageable createPageable(int page, int size,String sortBy,String sortDirection){
         size=Math.min(size,10);
         size=Math.max(size,1);
@@ -141,7 +163,7 @@ public class BookService implements IBookService {
         List<BookDTO> bookDTOs=books.getContent()
                 .stream()
                 .map(bookMapper::toDTO)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return new PageResponse<>(bookDTOs,
                 books.getNumber(),

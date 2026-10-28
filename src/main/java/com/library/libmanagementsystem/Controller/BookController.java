@@ -23,13 +23,7 @@ import java.util.List;
 public class BookController {
     private final IBookService bookService;
 
-    @PostMapping
-    public ResponseEntity<BookDTO>createBook( @Valid @RequestBody BookDTO bookDTO) throws BookException {
-       BookDTO books =bookService.createBook(bookDTO);
-        return new ResponseEntity<>(books, HttpStatus.OK);
-//        return ResponseEntity.ok(books);
 
-    }
     @PostMapping("/bulk")
     public ResponseEntity<List<BookDTO>>createBooksInBulks( @Valid @RequestBody List<BookDTO> bookDTOs) throws BookException {
          List<BookDTO> createdBooks =bookService.createBooksInBulk(bookDTOs);
@@ -43,7 +37,7 @@ public class BookController {
         return new ResponseEntity<>(searchedBook,HttpStatus.OK);
     }
 
-    @GetMapping("/{iSBN}")
+    @GetMapping("/isbn/{iSBN}")
     public ResponseEntity<BookDTO> searchBookByIsbn( @PathVariable("iSBN") String iSBN) throws BookException {
         BookDTO searchedBook=bookService.getBookByISBN(iSBN);
         return new ResponseEntity<>(searchedBook,HttpStatus.OK);
@@ -81,6 +75,19 @@ public class BookController {
 
         BookStatsResponse stats=new BookStatsResponse(totalActive,totalAvailable);
         return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/books")
+    public ResponseEntity<List<BookDTO>> getAllBooks(){
+        List<BookDTO> books =bookService.getAllBooks();
+        return ResponseEntity.ok(books);
+    }
+
+
+    @GetMapping("/AllActive")
+    public ResponseEntity<List<BookDTO>> getAllActiveBooks(){
+        List<BookDTO> books =bookService.getAllActiveBooks();
+        return ResponseEntity.ok(books);
     }
 
 }

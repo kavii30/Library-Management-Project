@@ -1,5 +1,6 @@
 package com.library.libmanagementsystem.payload.response;
 
+import com.library.libmanagementsystem.payload.dto.UserDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
